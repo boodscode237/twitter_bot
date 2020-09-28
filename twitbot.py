@@ -23,9 +23,29 @@ def limit_handler(cursor):
 		while True:
 			yield cursor.next()	
 	except tweepy.RateLimitError:
-		time.sleep(1000)
+		time.sleep(100)
 
-# super generous bot
+# super generous bot to follow somebody back
 
 for follower in limit_handler(tweepy.Cursor(api.followrs).items()):
-	print(followers.name)
+	if follower.name == 'followers_name' :
+		follower.follow()
+	
+	if follower.followers_count >= 100 :
+		follower.follow()
+
+
+
+
+search_str = 'python'
+
+numbersOfTweets = 2
+
+for tweet in tweepy.Cursor(api.search, search_str).items(numbersOfTweets):
+	try:
+		tweet.favorite()
+		print('i liked that tweet')
+	except tweepy.TweepError as e:
+		print(e.reason)
+	except StopIteration:
+		break
